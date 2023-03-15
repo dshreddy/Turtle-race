@@ -1,51 +1,78 @@
 # Author : D. Sai Hemanth Reddy
 # Date : 13 March 2023
 
-# Import required modules and classes
 import random
 from turtle import Turtle, Screen
 
-# Create a Screen object and set its dimensions
 sc = Screen()
 sc.setup(width=800, height=600)
 
-# Ask the user to bet on a turtle
-user_bet = sc.textinput(title="Make your bet", prompt="Which turtle will win the race ? (Enter a number [0,4])")
 
-# Define a list of colors to choose from
-colors = ["red", "blue", "green", "yellow", "orange", "pink", "violet", "black", "brown"]
+def game():
+    colors = ["red", "blue", "green", "yellow", "orange", "pink", "violet", "black", "brown"]
+    t = [0 for i in range(5)]
 
-# Create five Turtle objects and set their colors randomly
-t = [0 for i in range(5)]
-for i in range(5):
-    t[i] = Turtle(shape="turtle")
-    t[i].penup()
-    t[i].color(random.choice(colors))
+    for i in range(5):
+        t[i] = Turtle(shape="turtle")
+        t[i].speed("fastest")
+        t[i].penup()
+        t[i].color(random.choice(colors))
 
-# Position the turtles at the starting line
-t[4].goto(-380, -200)
-t[3].goto(-380, -100)
-t[1].goto(-380, 100)
-t[0].goto(-380, 200)
-t[2].goto(-380, 0)
+    t[4].goto(-380, -200)
+    t[3].goto(-380, -100)
+    t[1].goto(-380, 100)
+    t[0].goto(-380, 200)
+    t[2].goto(-380, 0)
 
-# Define a function that moves each turtle forward by a random amount
-def race():
-    t[0].forward(random.randint(0, 10))
-    t[1].forward(random.randint(0, 10))
-    t[2].forward(random.randint(0, 10))
-    t[3].forward(random.randint(0, 10))
-    t[4].forward(random.randint(0, 10))
+    allowed_values = ['0', '1', '2', '3', '4']
+    user_bet = sc.textinput(title="Make your bet", prompt="Which turtle will win the race ? (Enter a number [0,4])")
 
-# Keep running the race until one of the turtles crosses the finish line
-while t[0].pos()[0] < 360 and t[1].pos()[0] < 360 and t[2].pos()[0] < 360 and t[3].pos()[0] < 360 and t[4].pos()[0] < 360:
-    race()
+    while user_bet not in allowed_values:
+        user_bet = sc.textinput(title="Make your bet", prompt="Which turtle will win the race ? (Enter a number [0,4])")
 
-# Determine whether the user's bet turtle crossed the finish line before the others
-if t[int(user_bet)].pos()[0] >= 360:
-    print("You won")
-else:
-    print("You Lost")
+    def race():
+        t[0].forward(random.randint(0, 10))
+        t[1].forward(random.randint(0, 10))
+        t[2].forward(random.randint(0, 10))
+        t[3].forward(random.randint(0, 10))
+        t[4].forward(random.randint(0, 10))
 
-# Close the screen when the user clicks on it
-sc.exitonclick()
+    while t[0].pos()[0] < 360 and t[1].pos()[0] < 360 and t[2].pos()[0] < 360 and t[3].pos()[0] < 360 and t[4].pos()[
+        0] < 360:
+        race()
+
+    res = []
+    res.append((t[0].pos()[0], 0))
+    res.append((t[1].pos()[0], 1))
+    res.append((t[2].pos()[0], 2))
+    res.append((t[3].pos()[0], 3))
+    res.append((t[4].pos()[0], 4))
+    res.sort()
+    res.reverse()
+
+    if res[0][0]!=res[1][0]:
+        pr = '''Press 1 to play again, any other key to exit
+        '''+"Winner(s) ="+str(res[0][1])
+    else:
+        pr = '''Press 1 to play again, any other key to exit
+        ''' + "Winner(s) =" + str(res[0][1])
+        i = 1
+        while i <= 4 and res[i][0] == res[0][0]:
+            pr += " "+str(res[i][1])
+            i += 1
+
+    if t[int(user_bet)].pos()[0] >= 360:
+
+        inp = sc.textinput(title="You Won", prompt=pr)
+        if inp == '1':
+            sc.clear()
+            game()
+    else:
+        inp = sc.textinput(title="You Lost", prompt=pr)
+        if inp == '1':
+            sc.clear()
+            game()
+
+
+game()
+
